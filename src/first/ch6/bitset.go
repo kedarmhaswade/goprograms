@@ -3,7 +3,7 @@ package ch6
 import "bytes"
 
 // A bit vector uses a slice of unsigned integer values or “words,”
-// each bit of which represents a possible element of the set.
+// each bit of which represents an element of the set.
 // The set contains i if the i-th bit is set.
 // The following program demonstrates a simple bit vector type with these methods.
 
@@ -36,27 +36,13 @@ func (this *IntSet) Add(m int) bool {
 	return true
 }
 
-// UnionWith sets this to the union of this and that and returns this set
-func (this *IntSet) UnionWith(that *IntSet) *IntSet {
-	thisLen := len(this.words)
-	thatLen := len(that.words)
-	var i, j int
-	for ; i < thisLen && j < thatLen; i, j = i+1, j+1 {
-		this.words[i] |= that.words[j]
-	}
-	if i == thisLen {
-		this.words = append(this.words, that.words[j:]...)
-	}
-	this.words = append(this.words, this.words[i:]...)
-	return this
-}
-
 // AddAll adds all the given integers to this set. The caller is guaranteed that the given integers
 // are in the set after this call returns as long as they are non negative.
-func (this *IntSet) AddAll(a ... int) {
+func (this *IntSet) AddAll(a ... int) *IntSet {
 	for _, n := range a {
 		this.Add(n) // return value is ignored
 	}
+	return this
 }
 
 // String returns a textual representation of the members of this set.
@@ -72,17 +58,17 @@ func (this *IntSet) String() string {
 func (this *IntSet) StringN(n int) string {
 	var buf bytes.Buffer
 	buf.WriteString("\n")
-	panic("nyi")
+	return buf.String()
 }
 
 // Returns the size (cardinality) of this set.
-func (this *IntSet) Len() int {
-	size := 0
+func (this *IntSet) Size() int {
 	if this == nil {
-		return size
+		return 0
 	}
+	size := 0
 	for _, w := range this.words {
-		size += popCount(w)
+		size += PopCount(w)
 	}
 	return size
 }
@@ -116,8 +102,11 @@ func (this *IntSet) Copy() *IntSet {
 	return &IntSet{words2}
 }
 
-//Equals returns true if this and
+//Equals returns true if this and that if they are either the same set or contain the same elements
 func (this *IntSet) Equals(that *IntSet) bool {
+	if this == that {
+		return true
+	}
 	thisLen := len(this.words)
 	if thisLen != len(that.words) {
 		return false
@@ -130,8 +119,68 @@ func (this *IntSet) Equals(that *IntSet) bool {
 	return true
 }
 
-///////////// PRIVATE ///////
-func popCount(u uint64) int {
+//////// set operations
+
+// UnionWith creates a new set that is a "union" of this set and that set; does not mutate this set
+func (this *IntSet) UnionWith(that *IntSet) *IntSet {
+	thisLen, thatLen, result := getResult(this.words, that.words)
+	var i int
+	for ; i < thisLen && i < thatLen; i++ {
+		result.words[i] = this.words[i] | that.words[i]
+	}
+	if i == thisLen {
+		result.words = append(result.words, that.words[i:]...)
+	}
+	result.words = append(result.words, this.words[i:]...)
+	return result
+}
+
+// IntersectWith returns a new set that contains elements present in both this set and that set
+func (this *IntSet) IntersectWith(that *IntSet) *IntSet {
+	if this == nil || that == nil {
+		return &IntSet{} // every null set is different, can't use a constant
+	}
+	thisLen := len(this.words)
+	thatLen := len(that.words)
+	result := &IntSet{} // start empty
+	n := 0
+	if thisLen < thatLen {
+		result.words = make([]uint64, thisLen)
+		n = thisLen
+	} else {
+		result.words = make([]uint64, thatLen)
+		n = thatLen
+	}
+	for i := 0; i < n; i++ {
+		result.words[i] = this.words[i] & that.words[i]
+	}
+	return result
+}
+
+// DifferenceWith returns a new set that represents the difference of this set and that set -- a set that
+// contains every element in 'this' set, but not 'that' set.
+func (this *IntSet) DifferenceWith(that *IntSet) *IntSet {
+	if this == nil {
+		return &IntSet{}
+	}
+	if that == nil {
+		return this.Copy()
+	}
+	thisLen := len(this.words)
+	thatLen := len(that.words)
+	result := &IntSet{}
+	var i int
+	for ; i < thisLen && i < thatLen; i++ {
+		result.words = append(result.words, this.words[i] &^ that.words[i])
+	}
+	if i == thatLen {
+		result.words = append(result.words, this.words[i:]...)
+	}
+	return result
+}
+
+//PopCount counts the population, aka the set bits in the given number
+func PopCount(u uint64) int {
 	// a much more efficient function is possible
 	pc := 0
 	for i := 0; i < 64; i++ {
@@ -141,7 +190,7 @@ func popCount(u uint64) int {
 	}
 	return pc
 }
-
+///////////// PRIVATE ///////
 // coordinatesFor gives the word and bit indexes of the given integer in this set
 func (this *IntSet) coordinatesFor(m int) (int, uint64) {
 	idx := m / 64         // index of the word which may contain this integer
@@ -156,4 +205,18 @@ func (this *IntSet) hasAt(idx int, off uint64) bool {
 	}
 	return (this.words[idx]>>off)&1 == 1
 
+}
+
+// getResult returns an empty IntSet with a big-enough capacity that can hold elements
+// in either IntSet's internal representation (slice).
+func getResult(thisWords []uint64, thatWords []uint64) (int, int, *IntSet) {
+	thisLen := len(thisWords)
+	thatLen := len(thatWords)
+	var result = &IntSet{}
+	if thisLen > thatLen {
+		result.words = make([]uint64, thisLen)
+	} else {
+		result.words = make([]uint64, thatLen)
+	}
+	return thisLen, thatLen, result
 }

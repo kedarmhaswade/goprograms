@@ -4,15 +4,29 @@ package main
 import "fmt"
 
 func main() {
-	a := []int8{3, 2, 1, 5, 0, 6, 9, 7, 8}
-	b := []int8{5, 2, 1, 4, 0, 6, 9, 7, 8, 0, 1}
-	checkAdditionWith(a[:], b[:], 879605123, 10879604125)
-	a = []int8{3, 2, 1}
-	b = []int8{5, 9}
-	checkAdditionWith(a, b, 123, 95)
-	checkDigitMultiplicationWith(a, 9, 123*9)
-	var big int64 = 12243675623
-	checkMultiply(4233467, big)
+	//a := []int8{3, 2, 1, 5, 0, 6, 9, 7, 8}
+	//b := []int8{5, 2, 1, 4, 0, 6, 9, 7, 8, 0, 1}
+	//checkAdditionWith(a[:], b[:], 879605123, 10879604125)
+	//a = []int8{3, 2, 1}
+	//b = []int8{5, 9}
+	//checkAdditionWith(a, b, 123, 95)
+	//checkDigitMultiplicationWith(a, 9, 123*9)
+	//var big int64 = 12243675623
+	//var f int64 = 1125899906842624
+	//checkMultiply(4233467, big)
+	//checkMultiply(f, f)
+	printBigEndian(power(150, 1000))
+	printBigEndian(power(15, 25))
+}
+func power(a int, b int) []int8 {
+	// calculates a^b naively, better algorithm exists
+	f := toSlice(int64(a))
+	var r = make([]int8, len(f))
+	copy(r, f)
+	for i := 1; i < b; i++ {
+		r = multiply(r, f)
+	}
+	return r
 }
 func checkMultiply(first, second int64) {
 	// only non-negative numbers for now
@@ -120,6 +134,7 @@ func isEqual(digits []int8, value int64) bool {
 }
 func printBigEndian(num []int8) {
 	// not using recursion here :)
+	fmt.Printf("number of digits: %d\n", len(num))
 	for i := len(num) - 1; i >= 0; i-- {
 		fmt.Printf("%d", num[i])
 	}

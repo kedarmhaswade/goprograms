@@ -68,6 +68,7 @@ func SolveIt() {
 	for _, result := range sortedKeys {
 		if math.Round(result) == result {
 			fmt.Printf("[%v]: {%v}\n", result, mm[result])
+			//fmt.Printf("[%v]: {%v}\n", result, len(mm[result]))
 		}
 		//if result == -24 {
 		//	fmt.Printf("[%v]: {%v}\n", result, mm[result])

@@ -1,3 +1,4 @@
+// Explores constants
 package main
 
 import (

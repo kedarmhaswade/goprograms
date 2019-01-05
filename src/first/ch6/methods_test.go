@@ -26,7 +26,7 @@ func TestMultiplySelf(t *testing.T) {
 	act.Multiply(3) // same as (&act).Multiply(3)
 	var exp Integer = 36
 	if act != exp {
-		t.Errorf("expected: %d, actual: %s", exp, act)
+		t.Errorf("expected: %d, actual: %d", exp, act)
 	}
 	fmt.Printf("method type: %T\n", (*Integer).Multiply)
 }
