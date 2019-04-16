@@ -11,6 +11,7 @@ func main() {
 	for i := 0; i < len(s); {
 		r, size := utf8.DecodeRuneInString(s[i:])
 		fmt.Printf("%d\t%q\t%d\n", i, r, r)
+		fmt.Printf("size: %d\n", size)
 		i += size
 	}
 	// Go's range loop UTF-decodes a string implicitly

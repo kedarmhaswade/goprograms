@@ -42,7 +42,7 @@ func TestString_Length(t *testing.T) {
 	}
 	var nonEmpty String = "Hello"
 	exp = len(string(nonEmpty))
-	act = nonEmpty.Length()
+	act = nonEmpty.Length() // String and not *String is the receiver
 	if exp != act {
 		t.Errorf("expected: %d, actual: %d", exp, act)
 	}

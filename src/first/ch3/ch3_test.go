@@ -46,3 +46,8 @@ func TestStudyArrayPointers(t *testing.T) {
 	studyPointersToArrays()
 }
 
+func TestUnderstandSlicesAreNotCopied(t *testing.T) {
+	callerOfFunctionWithSliceArg()
+	callerOfFunctionWithArrayArg()
+	callerOfFunctionWithStructArg()
+}

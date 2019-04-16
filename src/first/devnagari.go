@@ -13,4 +13,5 @@ func main() {
 		fmt.Printf("gujarati unicode code point (decimal/hex): %d/%X = %c\n", c, c, c)
 	}
 	fmt.Printf("total gujarati: %d\n", '\u0AF9'-'\u0A80')
+	"इ°℃"
 }
