@@ -85,7 +85,8 @@ func TestSquashSpace(t *testing.T) {
 	fmt.Printf("%s\n", SquashSpace([]byte(s)))
 	s = " 			 A leading space, three tabs, and a space squashed to a space"
 	fmt.Printf("%s\n", SquashSpace([]byte(s)))
-	s = "अंकित त्यागी अौर केदार म्हसवडे कोडिंग् कर      	रहे 	हैं।"
+	s = "	ok, " +
+		"हम 		कोडिंग् कर      	रहे 	                हैं।            		"
 	fmt.Printf("%s\n", SquashSpace([]byte(s)))
 }
 

@@ -25,4 +25,9 @@ func main() {
 	fmt.Printf("before: %d %d\n", i, j)
 	i, j = j, i // tuple "assignment"
 	fmt.Printf("after: %d %d\n", i, j)
+	m := make(map[int]string)
+	m = nil
+	x := m[3]
+	m[3] = "foo"
+	fmt.Printf("x: %s\n", x)
 }

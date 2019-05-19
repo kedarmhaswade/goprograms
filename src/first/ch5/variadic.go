@@ -12,7 +12,7 @@ import "bytes"
 // passed to it can return 0 when no arguments are passed. But for a function like max which returns the maximum of
 // given arguments, there is no appropriate value to return when no arguments are passed. Similarly for min.
 // So, one should only provide max and min (variadic) functions with at least one required argument.
-// Doing so sidesteps the issues associated with providing variadic functions for which _all_ the arguments are optional
+// Doing so sidesteps the issues associated with providing variadic functions for which _all_ the arguments are optional.
 
 func max(first int, rest ...int) int {
 	m := first
@@ -33,6 +33,37 @@ func min(first int, rest ...int) int {
 	}
 	return m
 }
+
+// Parameterizing the "behavior" from above functions
+
+func linear(comparator func(x int, y int) bool, first int, rest ...int) int {
+	result := first
+	for _, n := range rest {
+		if (comparator(n, result)) {
+			result = n
+		}
+	}
+	return result
+}
+
+func max1(first int, rest ...int) int {
+	return linear(func(x int, y int) bool {
+		if x > y {
+			return true
+		}
+		return false
+	}, first, rest...)
+}
+
+func min1(first int, rest ...int) int {
+	return linear(func(x int, y int) bool {
+		if x < y {
+			return true
+		}
+		return false
+	}, first, rest...)
+}
+
 
 // 5.16 Write a variadic version of strings.Join
 // Here's a description from strings.Join:

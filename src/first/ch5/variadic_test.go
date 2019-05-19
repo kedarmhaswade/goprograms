@@ -1,6 +1,7 @@
 package ch5
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 )
@@ -61,3 +62,22 @@ func TestMoreJoin(t *testing.T) {
 	}
 }
 
+func TestMaxMax1MinMin1(t *testing.T) {
+	a := []int{-2, -34, 15, 2, 0, 10}
+	m := callIntIntEllipsisIntFunction(max, a[0], a[1:]...)
+	m1 := callIntIntEllipsisIntFunction(max1, a[0], a[1:]...)
+	fmt.Printf("m: %d, m1: %d\n", m, m1)
+	if (m != m1) {
+		t.Errorf("m: %d should have matched m1: %d", m, m1)
+	}
+	m = callIntIntEllipsisIntFunction(min, a[0], a[1:]...)
+	m1 = callIntIntEllipsisIntFunction(min1, a[0], a[1:]...)
+	fmt.Printf("m: %d, m1: %d\n", m, m1)
+	if (m != m1) {
+		t.Errorf("m: %d should have matched m1: %d", m, m1)
+	}
+}
+
+func callIntIntEllipsisIntFunction(f func(int, ...int) int, first int, rest ...int) int {
+	return f(first, rest...)
+}

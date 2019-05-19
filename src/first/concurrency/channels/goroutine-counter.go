@@ -36,7 +36,7 @@ func main() {
 	fmt.Printf("current: %d\n", val)
 }
 
-// atomically changes the value of the integer with given pointer by the given delta
+// atomically changes the Value of the integer with given pointer by the given delta
 func change(c *int32, delta int32) {
 	for {
 		old := atomic.LoadInt32(c)

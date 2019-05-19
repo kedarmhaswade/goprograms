@@ -9,9 +9,10 @@ func main() {
 	ch := make(chan int, 1)
 	for i := 0; i < 10; i++ {
 		select {
-		case x := <-ch:
-			fmt.Println(x) // "0" "2" "4" "6" "8"
-		case ch <- i:
+		case x := <-ch: // blocks, or waits when i is even
+			fmt.Println("chan rece: ", x, ", i: ", i) // "0" "2" "4" "6" "8"
+		case ch <- i: // blocks, or waits when i is odd
+			fmt.Println("chan send: ", i, ", i: ", i)
 		}
 	}
 	//ch := make(chan int, 1)
