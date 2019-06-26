@@ -6,7 +6,7 @@ package main
 import "fmt"
 
 func main() {
-	ch := make(chan int, 1)
+	ch := make(chan int, 1) // remember, size is 1, when channel has 1 element, writing to it blocks
 	for i := 0; i < 10; i++ {
 		select {
 		case x := <-ch: // blocks, or waits when i is even

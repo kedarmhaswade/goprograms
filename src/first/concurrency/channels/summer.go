@@ -38,13 +38,17 @@ func sum(first int32, last int32, c chan int64) {
 	c <- res
 }
 func main() {
-	a := 0
-	if a >= 10 {
-
+	var nc int64
+	var err error
+	if len(os.Args) < 2 {
+		nc = 10
+	} else {
+		nc, err = strconv.ParseInt(os.Args[1], 10, 32)
 	}
-	nc, err := strconv.ParseInt(os.Args[1], 10, 32)
 	if err != nil {
-		_ = fmt.Errorf("Usage: %s number-of-goroutines\n", nc)
+		_ = fmt.Errorf("Usage: %s [number-of-goroutines = 10]\n", nc)
 	}
-	sumAll(0, math.MaxInt32, int(nc))
+	for i := 0; i < 10000; i++ {
+		sumAll(0, math.MaxInt32, int(nc))
+	}
 }

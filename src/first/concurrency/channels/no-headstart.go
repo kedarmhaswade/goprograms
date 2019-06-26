@@ -10,27 +10,46 @@ import (
 	"time"
 )
 
-func main() {
-	ng := 40 // comparable to number of processors on this computer, but benchmarking here
+func getMaxHeadStart(useStartGate bool) int64 {
+	ng := 10 // comparable to number of processors on this computer, but benchmarking here
 	startTimes := make(chan int64, ng)
 	var startGate, endGate sync.WaitGroup
 	for i := 1; i <= ng; i++ {
-		startGate.Add(1)
+		if useStartGate {
+			startGate.Add(1)
+		}
 		endGate.Add(1)
 		go func(id int) {
 			defer endGate.Done()
 			startGate.Wait()
 			startTimes <- time.Now().UnixNano()
+			// do your work
 		}(i)
 	}
-	// now open the startgate!
-	startGate.Add(-ng)
+	// now open the start-gate!
+	if useStartGate {
+		startGate.Add(-ng)
+	}
 	endGate.Wait()
-	// now clear the channel, since we know that goroutines have ended
+	// now clear the channel, since we know that goroutines have started and ended
 	min := <-startTimes // the first goroutine to start
 	for i := 1; i <= ng-2; i++ {
-		<-startTimes // consume others
+		t := <-startTimes // consume others
+		if t < min {
+			fmt.Printf("Strange! %v (t) should have been greater than %v (min)\n", t, min)
+		}
 	}
 	max := <-startTimes // the last goroutine to start
-	fmt.Printf("the max headstart: %vns\n", max-min)
+	close(startTimes)
+	m := max - min
+	fmt.Printf("use startGate: %5v, the max headstart: %10v ns\n", useStartGate, m)
+	return m
+}
+
+func main() {
+	m1 := getMaxHeadStart(false)
+	m2 := getMaxHeadStart(true)
+	reducedTo := m1 - m2
+	fmt.Printf("Headstart without startGate: %v ns, with startGate: %v ns\n", m1, m2)
+	fmt.Printf("Headstart is reduced by: %v ns (bigger the better)\n", reducedTo)
 }
