@@ -13,6 +13,8 @@ func main() {
 	}()
 	time.Sleep(2 * time.Second)
 	if data == 0 {
-		fmt.Printf("the value is %v.\n", data)
+		fmt.Printf("the value of data is 0.")
+	} else {
+		fmt.Printf("the value of data is %v.\n", data)
 	}
 }

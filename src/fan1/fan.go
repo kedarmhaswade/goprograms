@@ -1,3 +1,8 @@
+// https://commandcenter.blogspot.com/2014/01/self-referential-functions-and-design.html
+// I've been trying on and off to find a nice way to deal with setting options in a Go package I am writing.
+// **Options on a type, that is**.
+// Before first, we define the thing that we are operating on, i.e. the thing whose options we want to set.
+// An option in this case is like a characteristic, or setting of the thing.
 package fan1
 
 import "fmt"
@@ -7,11 +12,6 @@ const (
 	Ceiling string = "ceiling"
 )
 
-// https://commandcenter.blogspot.com/2014/01/self-referential-functions-and-design.html
-// I've been trying on and off to find a nice way to deal with setting options in a Go package I am writing.
-// **Options on a type, that is**.
-// Before first, we define the thing that we are operating on, i.e. the thing whose options we want to set.
-// An option in this case is like a characteristic, or setting of the thing.
 type Fan1 struct {
 	speed int    // 1 through 5
 	kind  string // "table", "ceiling"
@@ -59,13 +59,17 @@ func Color(c string) option {
 		fan.color = c
 	}
 }
+
 // Why return a closure instead of just doing the setting?
 // Because we don't want the user to have to write the closure and we want the
 // Option method to be nice to use. (Plus there's more to come....)
 
+//New returns a Ceiling Fan1
 func New() *Fan1 {
 	return &Fan1{kind: Ceiling}
 }
+
+//String satisfies Stringer interface for Fan1
 func (f *Fan1) String() string {
 	return fmt.Sprintf("Fan with speed: %v, kind: %v, color: %v", f.speed, f.kind, f.color)
 }
