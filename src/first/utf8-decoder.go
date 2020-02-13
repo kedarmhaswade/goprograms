@@ -15,8 +15,10 @@ func main() {
 		i += size
 	}
 	// Go's range loop UTF-decodes a string implicitly
-	for i, r := range "Hello, केदार" {
+	v := "Hello, केदार"
+	for i, r := range v {
 		fmt.Printf("%d\t%q\t%d\n", i, r, r)
 	}
+	fmt.Printf("num bytes in v = %v\n", len(v))
 
 }
