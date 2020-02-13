@@ -12,7 +12,7 @@ func RemoveNonNumeric2(phoneNo string) string {
 	l := 0
 	for i := 0; i < strLen; i++ {
 		b := phoneNo[i]
-		if b != ' ' && b != '-' && b != '(' && b != ')' {
+		if b >= '0' && b <='9' {
 			buf = append(buf, b)
 			l += 1
 		}
