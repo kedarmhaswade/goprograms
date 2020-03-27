@@ -9,24 +9,22 @@ import (
 
 func main() {
 	for i := 0; i < 100; i++ {
-		b := work()
-		sleep(i, b)
+		go workLifeImbalance()
 	}
 }
 
-func sleep(i int, b bool) {
-	fmt.Printf("zzz... i = %v, b = %v\n", i, b)
-	time.Sleep(1*time.Second)
-}
-func work() bool {
+func workLifeImbalance() {
 	b := false
-	for i := 0; i < 100000; i++ {
-		var n big.Int
-		n.SetUint64(423432442233424342)
-		r := rand.New(rand.NewSource(time.Now().UnixNano()))
-		var z big.Int
-		z.Rand(r, &n)
-		b = z.ProbablyPrime(40)
+	for {
+		for i := 0; i < 1000000; i++ {
+			var n big.Int
+			n.SetUint64(423432442233424342)
+			r := rand.New(rand.NewSource(time.Now().UnixNano()))
+			var z big.Int
+			z.Rand(r, &n)
+			b = b && z.ProbablyPrime(40)
+		}
+		fmt.Printf("final: %v\n", b)
+		time.Sleep(1 * time.Second)
 	}
-	return b
 }
