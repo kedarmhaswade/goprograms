@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math/rand"
+	"os"
 	"time"
 )
 
@@ -14,6 +15,8 @@ func randomResult(c *Conn) string {
 	return fmt.Sprintf("%v from db: %v", rand.Intn(500), c.URL)
 }
 func (c *Conn) DoQuery(query string) string {
+	// simulate blocking
+	os.Stdin.Read(make([]byte, 1)) // read a single byte
 	return randomResult(c)
 }
 
@@ -24,8 +27,9 @@ func Query(conns []Conn, query string) string {
 			select {
 			case ch <- c.DoQuery(query):
 			default:
-				fmt.Printf("nothing on this one: %v\n", c.URL)
+				ch <- "non"
 			}
+			//ch <- c.DoQuery(query)
 		}(conn)
 	}
 	time.Sleep(100 * time.Millisecond) // beware, not prod code

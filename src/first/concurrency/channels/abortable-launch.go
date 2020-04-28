@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	ticker := time.Tick(1 * time.Second)
+	ticker := time.Tick(1 * time.Second)  // beware, it might leak
 	abort := make(chan struct{})
 	go func() {
 		os.Stdin.Read(make([]byte, 1)) // read a single byte
