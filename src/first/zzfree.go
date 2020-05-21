@@ -1,4 +1,4 @@
-// Solves a recurrence using a computer program: How many 00-free n-bit strings are there?
+// Solves a recurrence using a computer program: How many 00-free n-bit binary strings are there?
 package main
 
 import (
