@@ -37,9 +37,10 @@ func (mm Multimap) add(result float64, expr []string) {
 func (mm Multimap) get(result float64) [][]string {
 	return mm[result]
 }
-func SolveIt() {
+// Solves the problem for an expResult and slice of numbers (e.g. SolveIt(24, "1", "3", "4", "6")
+func SolveIt(expResult float64, ints... string) {
 	permutations := [][]string{{}}
-	permutations = permute([]string{"1", "3", "4", "6"}, 0, permutations)
+	permutations = permute(ints, 0, permutations)
 	operators := operatorTuples(3)
 	mm := Multimap{}
 	//fmt.Printf("%+v\n", permutations)
@@ -48,7 +49,7 @@ func SolveIt() {
 			candidates := postfixCandidates(operatorTuple, perm)
 			for _, candidate := range candidates {
 				result, e := EvaluatePostfix(candidate)
-				if e == nil && result == 24 {
+				if e == nil && result == expResult {
 					fmt.Printf("BINGO %s = %v\n", candidate, result)
 					mm.add(result, candidate)
 					//return
